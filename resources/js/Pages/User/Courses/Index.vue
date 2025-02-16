@@ -2,7 +2,7 @@
     <div class="container p-5">
         <div class="row row-cols-1 row-cols-md-4 g-4">
 
-            <div v-for="(course,index) in courses" class="col">
+            <div v-for="(course,index) in courses.data" class="col">
                 <div class="card h-100 shadow-lg border-0">
                     <img :src="course.main_image"
                         class="card-img-top rounded-top" alt="Course image">
@@ -26,10 +26,16 @@
 
 
         </div>
+
+        <div v-if="courses.links && courses.links.length > 1" >
+            <Pagination :links="courses.links" />
+        </div>
+
     </div>
 
 
 </template>
 <script setup>
 defineProps({ courses: Object })
+import Pagination from '@/Components/Pagination.vue'
 </script>

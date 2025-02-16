@@ -47,8 +47,7 @@ class AuthController extends Controller
             return redirect()->route('user.home');
             
         }
-        dd('NO');
-        //return back()->with('message', ['message' => 'Incorrect email or password', 'type' => 'error']);
+        return back()->with('message', ['message' => 'Incorrect email or password', 'type' => 'error']);
 
     }
 

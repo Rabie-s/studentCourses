@@ -14,12 +14,12 @@
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Products
+            Courses
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Web App</a></li>
-            <li><a class="dropdown-item" href="#">Mobile</a></li>
-            <li><a class="dropdown-item" href="#">Desktop</a></li>
+            <li v-for="(category,index) in $page.props.categories">
+              <a class="dropdown-item" :href="route('user.course.showCoursesByCategories',category.id)">{{category.title}}</a>
+            </li>
           </ul>
         </li>
         <li class="nav-item">

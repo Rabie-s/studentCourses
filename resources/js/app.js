@@ -1,9 +1,11 @@
 import './bootstrap';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.js'
+import 'vue3-toastify/dist/index.css';
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
 import { ZiggyVue } from '../../vendor/tightenco/ziggy'
+
 
 import DefaultLayout from '@/Layouts/DefaultLayout.vue'
 
