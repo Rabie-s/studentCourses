@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             HandleInertiaRequests::class,
         ]);
+        $middleware->redirectGuestsTo(fn() => route('user.auth.showLoginForm'));
+        $middleware->redirectUsersTo(fn()=>route('user.home'));
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

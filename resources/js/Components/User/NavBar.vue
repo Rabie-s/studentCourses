@@ -12,21 +12,18 @@
         <li class="nav-item">
           <Link class="nav-link active" aria-current="page" :href="route('user.home')">Home</Link>
         </li>
+        <li class="nav-item">
+          <Link class="nav-link active" aria-current="page" :href="route('user.course.index')">Courses</Link>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Courses
+            Categories
           </a>
           <ul class="dropdown-menu">
             <li v-for="(category,index) in $page.props.categories">
               <a class="dropdown-item" :href="route('user.course.showCoursesByCategories',category.id)">{{category.title}}</a>
             </li>
           </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Documentation</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Support</a>
         </li>
       </ul>
 

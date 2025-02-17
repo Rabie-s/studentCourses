@@ -16,7 +16,7 @@
                         <!-- Price and button section -->
                         <div class="mt-auto d-flex justify-content-between align-items-center">
                             <h4 class="text-primary fw-bold mb-0">{{ course.price }}</h4>
-                            <a href="#" class="btn btn-primary">Enroll Now</a>
+                            <Link :href="route('checkout.index',course.id)" class="btn btn-primary">Enroll Now</Link>
                         </div>
                     </div>
                 </div>
@@ -37,5 +37,7 @@
 </template>
 <script setup>
 defineProps({ courses: Object })
+import { Link } from '@inertiajs/vue3'
+
 import Pagination from '@/Components/Pagination.vue'
 </script>
