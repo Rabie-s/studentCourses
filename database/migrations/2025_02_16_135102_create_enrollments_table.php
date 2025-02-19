@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('course_id')->constrained();
-            $table->enum('status',['active','cancelled']);
-            $table->decimal('grade',5,2)->nullable()->default(0);
+            $table->enum('status',['active','cancelled','completed']);
+            $table->decimal('grade',5,2)->nullable()->default(0)->comment('Stores the grade value, ranging from 0.00 to 100.00');
             $table->decimal('enrollment_price',10,2);
             $table->timestamps();
         });

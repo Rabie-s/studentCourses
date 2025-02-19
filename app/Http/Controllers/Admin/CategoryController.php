@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::select('id', 'title', 'slug')->paginate(12);
+        $categories = Category::select('id', 'title', 'slug')->orderByDesc('id')->paginate(12);
         return Inertia::render('Admin/Categories/Index', ['categories' => $categories]);
     }
 

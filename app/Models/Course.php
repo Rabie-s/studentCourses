@@ -12,6 +12,13 @@ class Course extends Model
     use HasFactory;
     protected $fillable = ['title', 'slug', 'price', 'main_image', 'active', 'description', 'category_id', 'admin_id'];
 
+    protected $appends = ['main_image_url']; 
+
+    public function getMainImageUrlAttribute() 
+    {
+        return asset('storage/images/' . $this->main_image);
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

@@ -1,62 +1,101 @@
 <template>
     <div class="container mt-4">
-        <!-- Add New Student Section -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <Link role="button" :href="route('admin.courses.create')" class="btn btn-primary btn-lg shadow-lg">Add New
-            course
+        <!-- Header Section -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-uppercase text-primary mb-3 mb-md-0">Courses</h2>
+            <Link role="button" :href="route('admin.courses.create')" class="btn btn-primary btn-lg shadow">
+                + Add New Course
             </Link>
         </div>
 
         <!-- Table Section -->
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th scope="col" class="text-center">Title</th>
-                        <th scope="col" class="text-center">Price</th>
-                        <th scope="col" class="text-center">Teacher Name</th>
-                        <th scope="col" class="text-center">Category</th>
-                        <th scope="col" class="text-center">Actions</th> <!-- Added missing header -->
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(course, index) in courses.data" :key="index">
-                        <td class="align-middle text-center">{{ course.title }}</td>
-                        <td class="align-middle text-center">{{ course.price }}</td>
-                        <td class="align-middle text-center">{{ course.admin?.name || 'N/A' }}</td>
-                        <!-- Handle potential null admin -->
-                        <td class="align-middle text-center">{{ course.category?.title || 'N/A' }}</td>
-                        <!-- Handle potential null category -->
-                        <td class="text-center">
-                            <Link :href="route('admin.courses.edit', course.id)"
-                                class="btn btn-warning btn-sm mx-2 shadow-sm">
-                            Edit
-                            </Link>
-                            <button @click="destroy(course.id)" type="button"
-                                class="btn btn-danger btn-sm mx-2 shadow-sm">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="card shadow-lg rounded-4 border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle text-center">
+                        <thead class="bg-gradient bg-dark text-white">
+                            <tr>
+                                <th scope="col">Title</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Teacher</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(course, index) in courses.data" :key="index">
+                                <td class="fw-semibold text-wrap">{{ course.title }}</td>
+                                <td class="fw-bold text-success">${{ course.price }}</td>
+                                <td class="text-primary">{{ course.admin?.name || 'N/A' }}</td>
+                                <td class="text-secondary">{{ course.category?.title || 'N/A' }}</td>
+                                <td>
+                                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                                        <Link :href="route('admin.courses.edit', course.id)"
+                                            class="btn btn-warning btn-sm shadow">
+                                            Edit
+                                        </Link>
+                                        <button @click="confirmDelete(course.id)" class="btn btn-danger btn-sm shadow">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-
 
         <!-- Pagination Section -->
         <div v-if="courses.links && courses.links.length > 1" class="d-flex justify-content-center mt-4">
             <Pagination :links="courses.links" />
         </div>
-
     </div>
 </template>
 
 <script setup>
-defineProps({ courses: Object })
+defineProps({ courses: Object });
 import { Link, router } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue';
 
-function destroy(id) {
-    router.delete(route('admin.courses.destroy', id));
+function confirmDelete(id) {
+    if (confirm("Are you sure you want to delete this course?")) {
+        router.delete(route('admin.courses.destroy', id));
+    }
 }
 </script>
+
+<style scoped>
+/* Table Styling */
+.table th,
+.table td {
+    vertical-align: middle;
+    padding: 12px;
+}
+
+/* Buttons */
+.btn {
+    min-width: 90px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .table th,
+    .table td {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .btn {
+        min-width: 70px;
+        font-size: 0.8rem;
+    }
+}
+</style>

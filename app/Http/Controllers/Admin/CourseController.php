@@ -9,6 +9,7 @@ use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
@@ -18,7 +19,7 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::with(['admin:id,name', 'category:id,title'])
-            ->select('id', 'title', 'price', 'admin_id', 'category_id')->paginate(12);
+            ->select('id', 'title', 'price', 'admin_id', 'category_id')->orderByDesc('id')->paginate(8);
         return Inertia::render('Admin/Courses/Index', ['courses' => $courses]);
     }
 
@@ -40,16 +41,27 @@ class CourseController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'main_image' => 'required', //'required|file|mimes:png,jpg,jpeg|max:2048'
+            'main_image' => 'required|file|mimes:png,jpg,jpeg|max:2048',
             'description' => 'required|string',
-            'category_id' => 'required|numeric|exists:categories,id', // Ensure category_id exists in the categories table
-            'admin_id' => 'required|numeric|exists:admins,id', // Ensure category_id exists in the categories table
+            'category_id' => 'required|numeric|exists:categories,id',
+            'admin_id' => 'required|numeric|exists:admins,id',
+            'active' => 'nullable|boolean',
         ]);
-        $validatedData['slug'] = Str::slug($validatedData['title']);
-        $validatedData['active'] = $request->active;
 
+        // Store the image
+        $mainImagePath = $request->file('main_image')->store('images', 'public'); 
+        $validatedData['main_image'] = basename($mainImagePath);
+
+        // Generate Slug
+        $validatedData['slug'] = Str::slug($validatedData['title']);
+
+        // Convert 'active' field to integer
+        $validatedData['active'] = $request->has('active') ? 1 : 0;
+
+        // Create Course
         Course::create($validatedData);
-        return back()->with('message', ['message' => 'Course inserted successful', 'type' => 'success']);
+
+        return back()->with('message', ['message' => 'Course inserted successfully', 'type' => 'success']);
     }
 
     /**
@@ -76,28 +88,39 @@ class CourseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Find the course
         $course = Course::findOrFail($id);
 
-        // Validate the incoming request
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'main_image' => 'required', // Consider adding file validation if necessary
             'description' => 'required|string',
             'category_id' => 'required|numeric|exists:categories,id',
             'admin_id' => 'required|numeric|exists:admins,id',
+            'active' => 'nullable|boolean',
         ]);
 
-        // Update the slug if the title has changed
+        // Update Slug if title changed
         if ($course->title !== $validatedData['title']) {
             $validatedData['slug'] = Str::slug($validatedData['title']);
         }
 
-        // Update the course
+        // Handle Image Update
+        if ($request->hasFile('main_image')) {
+            // Delete old image
+            if ($course->main_image) {
+                Storage::disk('public')->delete('images/' . $course->main_image);
+            }
+            // Store new image
+            $mainImagePath = $request->file('main_image')->store('images', 'public');
+            $validatedData['main_image'] = basename($mainImagePath);
+        }
+
+        // Convert 'active' field to integer
+        $validatedData['active'] = $request->has('active') ? 1 : 0;
+
+        // Update Course
         $course->update($validatedData);
 
-        // Redirect back with a success message
         return back()->with('message', ['message' => 'Course updated successfully', 'type' => 'success']);
     }
 
